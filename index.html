@@ -1,0 +1,481 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>-</title>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #1a1a1a;
+    color: #fff;
+}
+
+nav {
+    background: #2a2a2a;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links button {
+    background: #3a3a3a;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.section {
+    padding: 2rem;
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.card {
+    background: #2a2a2a;
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    margin-top: 1rem;
+}
+
+.game-board div {
+    background: #3a3a3a;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+#snakeCanvas {
+    width: 100%;
+    height: 200px;
+    background: #000;
+}
+
+.calculator {
+    width: 100%;
+    max-width: 300px;
+    margin: 1rem auto;
+}
+
+#calc-display {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background: #3a3a3a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+}
+
+.calc-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+}
+
+.calc-buttons button {
+    padding: 0.5rem;
+    background: #3a3a3a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#notes {
+    width: 100%;
+    height: 200px;
+    background: #3a3a3a;
+    color: #fff;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.browser-container {
+    background: #2a2a2a;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+#search-bar {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    background: #3a3a3a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+}
+
+#content-area {
+    min-height: 400px;
+    background: #3a3a3a;
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #2a2a2a;
+    padding: 2rem;
+    border-radius: 8px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    max-width: 500px;
+}
+
+.modal-content button {
+    background: #3a3a3a;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+}
+    </style>
+</head>
+<body>
+    <div id="disclaimer-modal" class="modal">
+        <div class="modal-content">
+            <h2>Disclaimer</h2>
+            <p>Warning: By proceeding, you acknowledge that we are not responsible if your Chromebook gets taken away or for any consequences of using this app.</p>
+            <button onclick="acceptDisclaimer()">I Understand</button>
+        </div>
+    </div>
+    <nav>
+        <h1>DetentionBypass</h1>
+        <div class="nav-links">
+            <button onclick="showSection('games')">Games</button>
+            <button onclick="showSection('apps')">Apps</button>
+            <button onclick="showSection('browser')">Browser</button>
+            <button onclick="showSection('client')">Client</button>
+        </div>
+    </nav>
+    
+    <main>
+        <section id="games" class="section">
+            <h2>Games</h2>
+            <div class="grid">
+                <div class="card" onclick="startTicTacToe()">
+                    <h3>Tic Tac Toe</h3>
+                    <div id="tictactoe" class="game-board"></div>
+                </div>
+                <div class="card" onclick="startSnake()">
+                    <h3>Snake Game</h3>
+                    <canvas id="snakeCanvas"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="apps" class="section">
+            <h2>Apps</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Calculator</h3>
+                    <div class="calculator">
+                        <input type="text" id="calc-display" readonly>
+                        <div class="calc-buttons">
+                            <button onclick="appendNumber('7')">7</button>
+                            <button onclick="appendNumber('8')">8</button>
+                            <button onclick="appendNumber('9')">9</button>
+                            <button onclick="appendOperator('+')">+</button>
+                            <button onclick="appendNumber('4')">4</button>
+                            <button onclick="appendNumber('5')">5</button>
+                            <button onclick="appendNumber('6')">6</button>
+                            <button onclick="appendOperator('-')">-</button>
+                            <button onclick="appendNumber('1')">1</button>
+                            <button onclick="appendNumber('2')">2</button>
+                            <button onclick="appendNumber('3')">3</button>
+                            <button onclick="appendOperator('*')">×</button>
+                            <button onclick="appendNumber('0')">0</button>
+                            <button onclick="clearCalc()">C</button>
+                            <button onclick="calculate()">=</button>
+                            <button onclick="appendOperator('/')">/</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Notes</h3>
+                    <div id="saved-notes" style="margin-bottom: 10px;"></div>
+                    <textarea id="notes" placeholder="Write your notes here..."></textarea>
+                    <button onclick="saveNotes()">Save</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="browser" class="section">
+            <h2>Content Browser</h2>
+            <div class="browser-container">
+                <input type="text" id="search-bar" placeholder="Search or enter URL">
+                <div id="content-area">
+                    <p>Select content to display</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="client" class="section">
+            <h2>Client Portal</h2>
+            <div class="browser-container">
+                <div id="client-area">
+                    <iframe src="https://g4mzzz.unstop.cloudns.ch/a/hvtrs8%2F-hvmn.aade-x11c8gd23" width="100%" height="600px" frameborder="0"></iframe>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+// Navigation
+function showSection(sectionId) {
+    document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+    });
+    document.getElementById(sectionId).classList.add('active');
+}
+
+// Tic Tac Toe
+let currentPlayer = 'X';
+let gameBoard = ['', '', '', '', '', '', '', '', ''];
+let gameActive = true;
+
+function startTicTacToe() {
+    const board = document.getElementById('tictactoe');
+    board.innerHTML = '';
+    gameBoard = ['', '', '', '', '', '', '', '', ''];
+    gameActive = true;
+    currentPlayer = 'X';
+
+    for (let i = 0; i < 9; i++) {
+        const cell = document.createElement('div');
+        cell.addEventListener('click', () => makeMove(i));
+        board.appendChild(cell);
+    }
+}
+
+function checkWinner() {
+    const winPatterns = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+        [0, 4, 8], [2, 4, 6] // Diagonals
+    ];
+
+    for (const pattern of winPatterns) {
+        const [a, b, c] = pattern;
+        if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
+            return gameBoard[a];
+        }
+    }
+    
+    return gameBoard.includes('') ? null : 'tie';
+}
+
+function makeMove(index) {
+    if (!gameActive || gameBoard[index] !== '') return;
+    
+    gameBoard[index] = currentPlayer;
+    document.querySelectorAll('#tictactoe div')[index].textContent = currentPlayer;
+    
+    const result = checkWinner();
+    if (result) {
+        gameActive = false;
+        setTimeout(() => {
+            if (result === 'tie') {
+                alert("It's a tie!");
+            } else {
+                alert(`Player ${result} wins!`);
+            }
+            startTicTacToe();
+        }, 100);
+        return;
+    }
+    
+    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+}
+
+// Snake Game
+let snake = [{x: 10, y: 10}];
+let food = {x: 15, y: 15};
+let dx = 1;
+let dy = 0;
+let gameLoop;
+
+function startSnake() {
+    const canvas = document.getElementById('snakeCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 300;
+    canvas.height = 200;
+
+    if (gameLoop) clearInterval(gameLoop);
+
+    snake = [{x: 10, y: 10}];
+    food = {x: 15, y: 15};
+    dx = 1;
+    dy = 0;
+
+    gameLoop = setInterval(() => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Move snake
+        const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+        snake.unshift(head);
+
+        // Check if food eaten
+        if (head.x === food.x && head.y === food.y) {
+            food = {
+                x: Math.floor(Math.random() * (canvas.width/10)),
+                y: Math.floor(Math.random() * (canvas.height/10))
+            };
+        } else {
+            snake.pop();
+        }
+
+        // Draw snake
+        ctx.fillStyle = 'green';
+        snake.forEach(segment => {
+            ctx.fillRect(segment.x * 10, segment.y * 10, 10, 10);
+        });
+
+        // Draw food
+        ctx.fillStyle = 'red';
+        ctx.fillRect(food.x * 10, food.y * 10, 10, 10);
+    }, 100);
+}
+
+// Calculator
+let display = '';
+
+function appendNumber(num) {
+    display += num;
+    document.getElementById('calc-display').value = display;
+}
+
+function appendOperator(op) {
+    display += op;
+    document.getElementById('calc-display').value = display;
+}
+
+function clearCalc() {
+    display = '';
+    document.getElementById('calc-display').value = display;
+}
+
+function calculate() {
+    try {
+        display = eval(display).toString();
+        document.getElementById('calc-display').value = display;
+    } catch (e) {
+        display = 'Error';
+        document.getElementById('calc-display').value = display;
+    }
+}
+
+// Notes
+function saveNotes() {
+    const noteText = document.getElementById('notes').value;
+    if (!noteText.trim()) return;
+    
+    const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+    notes.push({
+        id: Date.now(),
+        text: noteText
+    });
+    localStorage.setItem('notes', JSON.stringify(notes));
+    displayNotes();
+    document.getElementById('notes').value = '';
+}
+
+function deleteNote(id) {
+    let notes = JSON.parse(localStorage.getItem('notes') || '[]');
+    notes = notes.filter(note => note.id !== id);
+    localStorage.setItem('notes', JSON.stringify(notes));
+    displayNotes();
+}
+
+function displayNotes() {
+    const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+    const notesContainer = document.getElementById('saved-notes');
+    notesContainer.innerHTML = notes.map(note => `
+        <div style="background: #3a3a3a; padding: 10px; margin-bottom: 10px; border-radius: 4px; display: flex; justify-content: space-between;">
+            <div>${note.text}</div>
+            <button onclick="deleteNote(${note.id})" style="background: #ff4444; border: none; color: white; padding: 2px 8px; border-radius: 4px; cursor: pointer;">Delete</button>
+        </div>
+    `).join('');
+}
+
+// Browser functionality
+document.getElementById('search-bar').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        const url = e.target.value;
+        const contentArea = document.getElementById('content-area');
+        contentArea.innerHTML = `<iframe src="${url}" width="100%" height="600px" frameborder="0"></iframe>`;
+    }
+});
+
+// Load default content
+document.getElementById('search-bar').value = 'https://bookingportal.mounthoodlodge.com/';
+document.getElementById('content-area').innerHTML = '<iframe src="https://bookingportal.mounthoodlodge.com/" width="100%" height="600px" frameborder="0"></iframe>';
+
+// Disclaimer handling
+function acceptDisclaimer() {
+    document.getElementById('disclaimer-modal').style.display = 'none';
+    localStorage.setItem('disclaimerAccepted', 'true');
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    if (!localStorage.getItem('disclaimerAccepted')) {
+        document.getElementById('disclaimer-modal').style.display = 'block';
+    }
+    showSection('games');
+    startTicTacToe();
+    const savedNotes = localStorage.getItem('notes');
+    displayNotes();
+});
+    </script>
+</body>
+</html>
